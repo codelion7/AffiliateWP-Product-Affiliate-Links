@@ -48,6 +48,13 @@ class AFFWP_PAFFL_EDD extends AFFWP_PAFFL_Integrations_Base {
 		return $products;
 	}
 
+	/**
+	 * Get products referral rates of an affiliate
+	 *
+	 * @since 1.0
+	 * @param  integer $affiliate_id ID of an affiliate
+	 * @return array                 List of product referral rates
+	 */
 	public function get_products_referral_rates( $affiliate_id ) {
 		
 		$products = $this->get_products();
