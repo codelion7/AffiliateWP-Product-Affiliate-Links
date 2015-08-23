@@ -68,7 +68,7 @@ class AFFWP_PAFFL_EDD extends AFFWP_PAFFL_Integrations_Base {
 
 			if ( ! empty( $product_rate )  ) {
 				
-				$rates[ $product->ID ] = $product_rate;
+				$rates[ $product->ID ] = $product_rate . '%';
 
 			} elseif ( 0 == $price ) {
 				
