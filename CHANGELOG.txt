@@ -1,1 +1,4 @@
 == AffiliateWP - Product Affiliate Links ==
+
+Version 1.0 - August 23, 2015
+- Initial release
