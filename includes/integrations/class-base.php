@@ -18,7 +18,6 @@ class AFFWP_PAFFL_Integrations_Base {
 	 */
 	public function __construct() {
 
-		
 		$this->load();
 	}
 

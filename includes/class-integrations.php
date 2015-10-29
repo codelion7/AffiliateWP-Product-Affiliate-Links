@@ -69,12 +69,9 @@ class AFFWP_PAFFL_Integrations {
 				
 			}
 
-			switch ( $name ) {
-				case 'edd':
-					$this->edd = new AFFWP_PAFFL_EDD();
-					break;
-			}
+			$class_name = 'AFFWP_PAFFL_' . strtoupper( $name );
 
+			$this->$name = new $class_name();
 		}
 	}
 
@@ -107,17 +104,31 @@ class AFFWP_PAFFL_Integrations {
 	 */
 	public function get_products() {
 
+		$products = array();
+
 		foreach ( $this->enabled_integrations as $name => $integration ) {
 
-			switch ( $name ) {
-				case 'edd':
-					$edd = $this->edd->get_products();
-					break;
-			}
+			$products = array_replace_recursive( $this->$name->get_products(), $products );
 		}
 
-		$products = array_merge( $edd );
-
 		return $products;
+	}
+
+	/**
+	 * Get products referral rates
+	 *
+	 * @since 1.1
+	 * @return array Referral rates from enabled integrations
+	 */
+	public function get_products_referral_rates( $affiliate_id ) {
+
+		$rates = array();
+
+		foreach ( $this->enabled_integrations as $name => $integration ) {
+
+			$rates = array_replace_recursive( $this->$name->get_products_referral_rates( $affiliate_id ), $rates );
+		}
+
+		return $rates;
 	}
 }

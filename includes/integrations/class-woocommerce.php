@@ -3,13 +3,13 @@
 if ( ! defined( 'ABSPATH' ) ) exit();
 
 /**
-* AFFWP_PAFFL_EDD class
+* AFFWP_PAFFL_WOOCOMMERCE class
 *
 * This class is responsible for managing affwp paffl EDD integrations
 *
 * @since 1.0
 */
-class AFFWP_PAFFL_EDD extends AFFWP_PAFFL_Integrations_Base {
+class AFFWP_PAFFL_WOOCOMMERCE extends AFFWP_PAFFL_Integrations_Base {
 
 	/**
 	 * All EDD Downloads
@@ -37,7 +37,7 @@ class AFFWP_PAFFL_EDD extends AFFWP_PAFFL_Integrations_Base {
 	public function get_products() {
 		
 		$args = array(
-			'post_type'      => 'download',
+			'post_type'      => 'product',
 			'posts_per_page' => -1,
 			'orderby'        => 'title',
 			'order'          => 'ASC',
@@ -62,17 +62,13 @@ class AFFWP_PAFFL_EDD extends AFFWP_PAFFL_Integrations_Base {
 
 		foreach ( $products as $product ) {
 
-			if ( edd_has_variable_prices( $product->ID ) ) {
-				
-				$price = absint( edd_get_highest_price_option( $product->ID ) );
+			$wc_product = wc_get_product( $product->ID );
 
-			} else {
-
-				$price = absint( edd_get_download_price( $product->ID ) );
-			}
-
-			$disabled_product = get_post_meta( $product->ID, '_affwp_edd_referrals_disabled', true );
-			$product_rate     = get_post_meta( $product->ID, '_affwp_edd_product_rate', true );
+			$price = $wc_product->price;
+			
+			$product_rate = get_post_meta( $product->ID, '_affwp_woocommerce_product_rate', true );
+			
+			$disabled_product = get_post_meta( $product->ID, '_affwp_woocommerce_referrals_disabled', true );
 
 			if ( 1 == $disabled_product ) {
 

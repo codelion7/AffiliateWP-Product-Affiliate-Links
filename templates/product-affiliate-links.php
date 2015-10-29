@@ -16,8 +16,8 @@
 			<?php $products     = affwp_paffl()->integrations->get_products(); ?>
 			<?php $referral_var = affwp_paffl()->integrations->referral_var; ?>
 			<?php $affiliate_id = affwp_get_affiliate_id(); ?>
-			<?php $rates		= affwp_paffl()->integrations->edd->get_products_referral_rates( $affiliate_id ); ?>
-
+			<?php $rates		= affwp_paffl()->integrations->get_products_referral_rates( $affiliate_id ); ?>
+<?php //wp_die( var_dump( $rates) ); ?>
 			<?php foreach ( $products as $product ) : ?>
 
 			<tr>
