@@ -1,4 +1,12 @@
 == AffiliateWP - Product Affiliate Links ==
 
+Version 1.1 - November 2, 2015
+- Add: Woocommerce integration
+- Add: Commission column in affiliate links table
+- Add: Support for pretty permalink
+- Improve: Integration base class codes
+- Improve: EDD integration class codes
+- Improve: Initial "commmission" column changed to "rate"
+
 Version 1.0 - August 23, 2015
 - Initial release
