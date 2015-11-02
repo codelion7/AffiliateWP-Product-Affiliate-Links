@@ -6,7 +6,7 @@
 		<thead>
 			<tr>
 				<th><?php _e( 'Products', 'affwp-paffl' ); ?></th>
-				<th><?php _e( 'Commission', 'affwp-paffl' ); ?></th>
+				<th><?php _e( 'Rate', 'affwp-paffl' ); ?></th>
 				<th><?php _e( 'Affiliate Links', 'affwp-paffl' ); ?></th>
 			</tr>
 		</thead>
@@ -14,16 +14,15 @@
 		<tbody>
 
 			<?php $products     = affwp_paffl()->integrations->get_products(); ?>
-			<?php $referral_var = affwp_paffl()->integrations->referral_var; ?>
-			<?php $affiliate_id = affwp_get_affiliate_id(); ?>
 			<?php $rates		= affwp_paffl()->integrations->get_products_referral_rates( $affiliate_id ); ?>
-<?php //wp_die( var_dump( $rates) ); ?>
+			<?php $aff_links	= affwp_paffl()->integrations->get_products_affiliate_links( $affiliate_id ); ?>
+
 			<?php foreach ( $products as $product ) : ?>
 
 			<tr>
 				<td><?php echo $product->post_title; ?></td>
 				<td><?php echo $rates[ $product->ID ]; ?></td>
-				<td><?php echo add_query_arg( array( $referral_var => $affiliate_id ), get_permalink( $product->ID ) ); ?></td>
+				<td><?php echo $aff_links[ $product->ID ] ?></td>
 			</tr>
 
 			<?php endforeach; ?>
