@@ -81,6 +81,7 @@ class AFFWP_PAFFL_Integrations_Base {
 	public function get_products_affiliate_links( $integration, $products, $affiliate_id ) {
 		$referral_format = affiliate_wp()->settings->get( 'referral_format', 'id' );
 		$referral_var    = affiliate_wp()->settings->get( 'referral_var', 'ref' );
+		$pretty_url      = affwp_is_pretty_referral_urls();
 
 		if ( 'id' == $referral_format ) {
 			$affiliate_id = affwp_get_affiliate_id( $affiliate_id );
@@ -91,7 +92,11 @@ class AFFWP_PAFFL_Integrations_Base {
 		$aff_links = array();
 
 		foreach ( $products as $product ) {
-			$aff_links[ $product->ID ] = add_query_arg( array( $referral_var => $affiliate_id ), get_permalink( $product->ID ) );
+			if ( false === $pretty_url ) {
+				$aff_links[ $product->ID ] = add_query_arg( array( $referral_var => $affiliate_id ), get_permalink( $product->ID ) );
+			} else {
+				$aff_links[ $product->ID ] = get_permalink( $product->ID ) . trailingslashit( $referral_var ) . trailingslashit( $affiliate_id );
+			}
 		}
 
 		return $aff_links;
