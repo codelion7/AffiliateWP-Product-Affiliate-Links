@@ -42,7 +42,7 @@ class AFFWP_PAFFL_WOOCOMMERCE extends AFFWP_PAFFL_Integrations_Base {
 	/**
 	 * Get products referral rates of an affiliate
 	 *
-	 * @since 1.0
+	 * @since 1.1
 	 * @param  integer $affiliate_id ID of an affiliate
 	 * @return array                 List of product referral rates
 	 */
@@ -50,8 +50,7 @@ class AFFWP_PAFFL_WOOCOMMERCE extends AFFWP_PAFFL_Integrations_Base {
 		$rates    = array();
 
 		foreach ( $this->products as $product ) {
-			$wc_product = wc_get_product( $product->ID );
-			$price      = $wc_product->price;
+			$price      = $this->get_product_price( $product->ID );
 
 			$rates[ $product->ID ] = parent::get_product_referral_rate( 'woocommerce', $product->ID, $price, $affiliate_id );
 		}
@@ -63,6 +62,7 @@ class AFFWP_PAFFL_WOOCOMMERCE extends AFFWP_PAFFL_Integrations_Base {
 	 * Get products affiliate links
 	 * 
 	 * Overridden function of base class function
+	 * @since 1.1
 	 * @param  string $integration  Name of AffiliateWP integration
 	 * @param  array  $products     Array of products
 	 * @param  int    $affiliate_id ID of an affiliate
@@ -72,5 +72,48 @@ class AFFWP_PAFFL_WOOCOMMERCE extends AFFWP_PAFFL_Integrations_Base {
 		$aff_links = parent::get_products_affiliate_links( $integration, $this->products, $affiliate_id );
 
 		return $aff_links;
+	}
+
+	/**
+	 * Get products commission from all integrations
+	 * @since 1.1
+	 * @param  string  $integration  Name of AffiliateWP integration
+	 * @param  array   $products     Array of products
+	 * @param  string  $price 		 Price of a product
+	 * @param  integer $affiliate_id ID of an affiliate
+	 * @return array                 Array of products commission
+	 */
+	public function get_products_commission( $affiliate_id ) {
+		$commission = array();
+
+		foreach ( $this->products as $product ) {
+			$price = $this->get_product_price( $product->ID );
+
+			$commission[ $product->ID ] = parent::get_product_commission( 'woocommerce', $product->ID, $price, $affiliate_id );
+		}
+
+		return $commission;
+	}
+
+	/**
+	 * Get product price
+	 * @since 1.1
+	 * @param  int    $product_id ID of a product
+	 * @return array|string       Price array if varaible product, string otherwise
+	 */
+	public function get_product_price( $product_id ) {
+		$product = wc_get_product( $product_id );
+
+		if ( $product->is_type( 'variable' ) ) {
+			$product = new WC_Product_Variable( $product );
+
+			$price = array();
+			$price[0] = $product->min_variation_price;
+			$price[1] = $product->max_variation_price;
+		} else {
+			$price = $product->price;
+		}
+
+		return $price;
 	}
 }

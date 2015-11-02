@@ -42,7 +42,7 @@ class AFFWP_PAFFL_EDD extends AFFWP_PAFFL_Integrations_Base {
 	/**
 	 * Get products referral rates of an affiliate
 	 *
-	 * @since 1.0
+	 * @since 1.1
 	 * @param  integer $affiliate_id ID of an affiliate
 	 * @return array                 List of product referral rates
 	 */
@@ -50,11 +50,7 @@ class AFFWP_PAFFL_EDD extends AFFWP_PAFFL_Integrations_Base {
 		$rates    = array();
 
 		foreach ( $this->products as $product ) {
-			if ( edd_has_variable_prices( $product->ID ) ) {
-				$price = absint( edd_get_highest_price_option( $product->ID ) );
-			} else {
-				$price = absint( edd_get_download_price( $product->ID ) );
-			}
+			$price = $this->get_product_price( $product->ID );
 
 			$rates[ $product->ID ] = parent::get_product_referral_rate( 'edd', $product->ID, $price, $affiliate_id );
 		}
@@ -66,6 +62,7 @@ class AFFWP_PAFFL_EDD extends AFFWP_PAFFL_Integrations_Base {
 	 * Get products affiliate links
 	 * 
 	 * Overridden function of base class function
+	 * @since 1.1
 	 * @param  string $integration  Name of AffiliateWP integration
 	 * @param  array  $products     Array of products
 	 * @param  int    $affiliate_id ID of an affiliate
@@ -75,6 +72,45 @@ class AFFWP_PAFFL_EDD extends AFFWP_PAFFL_Integrations_Base {
 		$aff_links = parent::get_products_affiliate_links( $integration, $this->products, $affiliate_id );
 
 		return $aff_links;
+	}
+
+	/**
+	 * Get products commission from all integrations
+	 * @since 1.1
+	 * @param  string  $integration  Name of AffiliateWP integration
+	 * @param  array   $products     Array of products
+	 * @param  string  $price 		 Price of a product
+	 * @param  integer $affiliate_id ID of an affiliate
+	 * @return array                 Array of products commission
+	 */
+	public function get_products_commission( $affiliate_id ) {
+		$commission = array();
+
+		foreach ( $this->products as $product ) {
+			$price = $this->get_product_price( $product->ID );
+
+			$commission[ $product->ID ] = parent::get_product_commission( 'edd', $product->ID, $price, $affiliate_id );
+		}
+
+		return $commission;
+	}
+
+	/**
+	 * Get product price
+	 * @since 1.1
+	 * @param  int    $product_id ID of a product
+	 * @return array|string       Array of price if variable product, string otherwise
+	 */
+	public function get_product_price( $product_id ) {
+		if ( edd_has_variable_prices( $product_id ) ) {
+			$price = array();
+			$price[0] = absint( edd_get_lowest_price_option( $product_id ) );
+			$price[1] = absint( edd_get_highest_price_option( $product_id ) );
+		} else {
+			$price = absint( edd_get_download_price( $product_id ) );
+		}
+
+		return $price;
 	}
 
 }
