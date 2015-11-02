@@ -50,7 +50,10 @@ class AFFWP_PAFFL_Integrations_Base {
 	/**
 	 * Get products referral rates of an affiliate
 	 *
-	 * @since 1.0
+	 * @since  1.1
+	 * @param  string  $integration  Name of AffiliateWP integration
+	 * @param  int     $product_id   ID of a product
+	 * @param  string  $price 		 Price of a product
 	 * @param  integer $affiliate_id ID of an affiliate
 	 * @return array                 List of product referral rates
 	 */
@@ -63,7 +66,7 @@ class AFFWP_PAFFL_Integrations_Base {
 		} elseif ( ! empty( $product_rate )  ) {
 			$rate = $product_rate . '%';
 		} elseif ( 0 == $price ) {
-			$rate = __( 'Free', 'affwp-paffl' );
+			$rate = __( 'Free Product', 'affwp-paffl' );
 		} elseif ( 0 < $price ) {
 			$rate = affwp_get_affiliate_rate( $affiliate_id, true );
 		}
@@ -73,6 +76,7 @@ class AFFWP_PAFFL_Integrations_Base {
 
 	/**
 	 * Get products affiliate links
+	 * @since  1.1
 	 * @param  string $integration  Name of AffiliateWP integration
 	 * @param  array  $products     Array of products
 	 * @param  int    $affiliate_id ID of an affiliate
@@ -100,5 +104,32 @@ class AFFWP_PAFFL_Integrations_Base {
 		}
 
 		return $aff_links;
+	}
+
+	/**
+	 * Get products commission from all integrations
+	 * @since  1.1
+	 * @param  string  $integration  Name of AffiliateWP integration
+	 * @param  string  $product_id   ID of a product
+	 * @param  string  $price 		 Price of a product
+	 * @param  integer $affiliate_id ID of an affiliate
+	 * @return string                Product commission
+	 */
+	public function get_product_commission( $integration, $product_id, $price, $affiliate_id ) {
+		$referral_rate = $this->get_product_referral_rate( $integration, $product_id, $price, $affiliate_id );
+
+		if ( 'free product' == strtolower( $referral_rate ) || 'disabled' == strtolower( $referral_rate ) ) {
+			$commission = affwp_currency_filter( 0 );
+		} else {
+			$referral_rate = absint( str_replace( '%', '', $referral_rate ) );
+
+			if ( is_array( $price ) ) {
+				$commission = affwp_currency_filter( ( $referral_rate / 100 ) * $price[0] ) . ' - ' . affwp_currency_filter( ( $referral_rate / 100 ) * $price[1] );
+			} else {
+				$commission = affwp_currency_filter( ( $referral_rate / 100 ) * $price );
+			}
+		}
+		
+		return $commission;
 	}
 }

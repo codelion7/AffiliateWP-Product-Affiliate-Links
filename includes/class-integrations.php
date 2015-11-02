@@ -113,7 +113,7 @@ class AFFWP_PAFFL_Integrations {
 
 	/**
 	 * Get products affiliate links from all integrations
-	 * @since 1.1
+	 * @since  1.1
 	 * @param  int   $affiliate_id ID of an affiliate
 	 * @return array               Array of products affiliate links
 	 */
@@ -126,5 +126,22 @@ class AFFWP_PAFFL_Integrations {
 		}
 
 		return $aff_links;
+	}
+
+	/**
+	 * Get products commission from all integrations
+	 * @since  1.1
+	 * @param  int   $affiliate_id ID of an affiliate
+	 * @return array               Array of products commission
+	 */
+	public function get_products_commission( $affiliate_id ) {
+		$commission = array();
+
+		foreach ( $this->enabled_integrations as $name => $integration ) {
+
+			$commission = array_replace_recursive( $this->$name->get_products_commission( $affiliate_id ), $commission );
+		}
+
+		return $commission;
 	}
 }
