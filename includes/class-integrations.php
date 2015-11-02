@@ -12,14 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) exit();
 class AFFWP_PAFFL_Integrations {
 
 	/**
-	 * AffiliateWP referral variable set by user
-	 *
-	 * @since 1.0
-	 * @var string
-	 */
-	public $referral_var;
-
-	/**
 	 * Enabled AffiliateWP integrations
 	 *
 	 * @since 1.0
@@ -28,21 +20,11 @@ class AFFWP_PAFFL_Integrations {
 	private $enabled_integrations;
 
 	/**
-	 * EDD integration object
-	 *
-	 * @since 1.0
-	 * @var object
-	 */
-	public $edd;
-
-	/**
 	 * Class __construct function
 	 *
 	 * @since 1.0
 	 */
 	public function __construct() {
-
-		$this->referral_var         = affiliate_wp()->settings->get( 'referral_var', 'ref' );
 		$this->enabled_integrations = affiliate_wp()->settings->get( 'integrations', array() );
 		$this->load();
 
@@ -55,7 +37,6 @@ class AFFWP_PAFFL_Integrations {
 	 * @since 1.0
 	 */
 	public function load() {
-
 		// Load enabled integrations file
 		if ( ! empty( $this->enabled_integrations ) ) {
 			include AFFWP_PAFFL_PLUGIN_PATH . '/includes/integrations/class-base.php';
@@ -84,7 +65,6 @@ class AFFWP_PAFFL_Integrations {
 	 * @param  integer $affiliate_id ID of the affiliate from the filter
 	 */
 	public function product_affiliate_links( $affiliate_id ) {
-
 		if ( isset( $_GET['tab'] ) && 'urls' != $_GET['tab'] ) {
 			return;
 		}
@@ -103,12 +83,11 @@ class AFFWP_PAFFL_Integrations {
 	 * @return array Array of merged products of all enabled integrations
 	 */
 	public function get_products() {
-
 		$products = array();
 
 		foreach ( $this->enabled_integrations as $name => $integration ) {
 
-			$products = array_replace_recursive( $this->$name->get_products(), $products );
+			$products = array_replace_recursive( $this->$name->products, $products );
 		}
 
 		return $products;
@@ -118,10 +97,10 @@ class AFFWP_PAFFL_Integrations {
 	 * Get products referral rates
 	 *
 	 * @since 1.1
+	 * @param int $affiliate_id ID of an affiliate
 	 * @return array Referral rates from enabled integrations
 	 */
 	public function get_products_referral_rates( $affiliate_id ) {
-
 		$rates = array();
 
 		foreach ( $this->enabled_integrations as $name => $integration ) {
@@ -130,5 +109,22 @@ class AFFWP_PAFFL_Integrations {
 		}
 
 		return $rates;
+	}
+
+	/**
+	 * Get products affiliate links from all integrations
+	 * @since 1.1
+	 * @param  int   $affiliate_id ID of an affiliate
+	 * @return array               Array of products affiliate links
+	 */
+	public function get_products_affiliate_links( $affiliate_id ) {
+		$aff_links = array();
+
+		foreach ( $this->enabled_integrations as $name => $integration ) {
+
+			$aff_links = array_replace_recursive( $this->$name->get_products_affiliate_links( $name, array(), $affiliate_id ), $aff_links );
+		}
+
+		return $aff_links;
 	}
 }
