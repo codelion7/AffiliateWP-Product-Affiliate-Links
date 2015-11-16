@@ -52,7 +52,9 @@ class AFFWP_PAFFL_Integrations {
 
 			$class_name = 'AFFWP_PAFFL_' . strtoupper( $name );
 
-			$this->$name = new $class_name();
+			if ( class_exists( $class_name ) ) {
+				$this->$name = new $class_name();
+			}
 		}
 	}
 
@@ -86,8 +88,9 @@ class AFFWP_PAFFL_Integrations {
 		$products = array();
 
 		foreach ( $this->enabled_integrations as $name => $integration ) {
-
-			$products = array_replace_recursive( $this->$name->products, $products );
+			if ( isset( $this->$name ) ) {
+				$products = array_replace_recursive( $this->$name->products, $products );
+			}
 		}
 
 		return $products;
@@ -104,8 +107,9 @@ class AFFWP_PAFFL_Integrations {
 		$rates = array();
 
 		foreach ( $this->enabled_integrations as $name => $integration ) {
-
-			$rates = array_replace_recursive( $this->$name->get_products_referral_rates( $affiliate_id ), $rates );
+			if ( isset( $this->$name ) ) {
+				$rates = array_replace_recursive( $this->$name->get_products_referral_rates( $affiliate_id ), $rates );
+			}
 		}
 
 		return $rates;
@@ -121,8 +125,9 @@ class AFFWP_PAFFL_Integrations {
 		$aff_links = array();
 
 		foreach ( $this->enabled_integrations as $name => $integration ) {
-
-			$aff_links = array_replace_recursive( $this->$name->get_products_affiliate_links( $name, array(), $affiliate_id ), $aff_links );
+			if ( isset( $this->$name ) ) {
+				$aff_links = array_replace_recursive( $this->$name->get_products_affiliate_links( $name, array(), $affiliate_id ), $aff_links );
+			}
 		}
 
 		return $aff_links;
@@ -138,8 +143,9 @@ class AFFWP_PAFFL_Integrations {
 		$commission = array();
 
 		foreach ( $this->enabled_integrations as $name => $integration ) {
-
-			$commission = array_replace_recursive( $this->$name->get_products_commission( $affiliate_id ), $commission );
+			if ( isset( $this->$name ) ) {
+				$commission = array_replace_recursive( $this->$name->get_products_commission( $affiliate_id ), $commission );
+			}
 		}
 
 		return $commission;

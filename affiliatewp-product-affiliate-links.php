@@ -3,7 +3,7 @@
  * Plugin Name: AffiliateWP - Product Affiliate Links
  * Plugin URI: https://www.yudhistiramauris.com/products/affiliatewp-product-affiliate-links/
  * Description: Display product affiliate link for each product in affiliate area.
- * Version: 1.1
+ * Version: 1.1.1
  * Author: Yudhistira Mauris
  * Author URI: https://www.yudhistiramauris.com/
  * Text Domain: affwp-paffl
@@ -89,7 +89,7 @@ final class AFFWP_PAFFL {
 
 		// Plugin version
 		if ( ! defined( 'AFFWP_PAFFL_VERSION' ) ) {
-			define( 'AFFWP_PAFFL_VERSION', '1.1' );
+			define( 'AFFWP_PAFFL_VERSION', '1.1.1' );
 		}
 
 		// Plugin file
